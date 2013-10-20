@@ -1,5 +1,7 @@
 Interactive Visualization
 ========================
+#####(CS 294 Assignment 3)
+
 #Data Domain
 We started off by wanting to visualize some sort of data that would go well with a map. We restricted our scope to just the US and possibly think about the entire world as a final project. After some deliberation, we decided to visualize the trend of the state population from 1900 to 2010. The visualization would help us to compare the rate at which the population of various states varied in a similar time period. 
 
