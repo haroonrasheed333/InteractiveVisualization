@@ -8,7 +8,7 @@ The Interactivity that we aimed for
 * Click on a particular state to get the trend.
 * Click in the selected state again to deselect
 
-[[Image: Screen_1.jpg | 800px]]
+[![Storyboard1] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/Screen%201.jpg)]
 [[Image: Screen_2.jpg | 800px]]
 
 ###Additional features:
