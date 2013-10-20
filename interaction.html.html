@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body{
+  font: 12px/18px 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif;
+}
+
+.background {
+  fill: none;
+  pointer-events: all;
+}
+
+h2{
+  text-align: center;
+}
+
+#collleft{
+  right: 50%
+}
+
+#linechart{
+  width: 46%;
+  left: 52%;
+  height: 400px;
+  float: left;
+}
+
+#barchart{
+  width: 46%;
+  left: 52%;
+  height: 400px;
+  float: left;
+}
+
+#statemap{
+  margin-left: 250px;
+  width: 100%;
+  height: 400px;
+  float: left;
+}
+
+#states {
+  fill: #aaa;
+}
+
+#states .active {
+  fill: orange;
+}
+
+#state-borders {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+</style>
+<body>
+  <div id="collleft">
+    <div id="stateh2"></div>
+    <div id="statemap">
+    <div id="smap"></div>
+  </div>
+  <div style="float: left; width: 5%; height: 500px; margin-top: 50px;">
+  <input type="checkbox" name="chart" id="linecheck" value="Line">Line<br>
+  <input type="checkbox" name="chart" id="barcheck" value="Bar">Bar 
+</div>
+
+<div id="charth2"></div>
+  <div id="linechart">
+  </div>
+  <div id="barchart">
+  </div>
+</div>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script>
+
+$("#linecheck").on("click", function() {
+
+    if($("#linecheck").is(":checked"))
+    {
+        $("#linechart").show();
+    }
+    else
+    {
+        $("#linechart").hide();
+    }
+
+  });
+
+$("#barcheck").on("click", function() {
+
+    if($("#barcheck").is(":checked"))
+    {
+        $("#barchart").show();
+    }
+    else
+    {
+        $("#barchart").hide();
+    }
+
+  });
+
+$("#linechart").hide();
+$("#barchart").hide();
+
+var width = 650, height = 400, centered;
+var projection = d3.geo.albersUsa()
+    .scale(800)
+    .translate([width / 2, height / 2]);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var svg = d3.select("#smap")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", height)
+    .on("click", clicked);
+
+var g = svg.append("g");
+
+d3.json("gz_2010_us_040_00_500k.json", function(error, us) {
+  g.append("g")
+      .attr("id", "states")
+      .selectAll("path")
+      .data(us.features)
+      .enter().append("svg:path")
+      .attr("d", path)
+      .on("click", clicked);
+
+  svg.append("path")
+      .datum(us.features)
+      .attr("d", path)
+      .attr("class", "feature");
+
+    $("#stateh2").append('<h2>US State Map</h2>');
+    $("#charth2").append('<h2>Click on a state to see variation of population from 1900 to 2010</h2>');
+
+  svg.selectAll(".place-label")
+        .data(us.features)
+      .enter().append("text")
+        .attr("class", "place-label")
+        .attr("transform", function(d) {return "translate(" + path.centroid(d) + ")";})
+        .attr("dy", ".35em")
+        .style("text-anchor", "middle")
+        .text(function(d) { return d.properties.NAME; })
+        .on("click", clicked);
+
+  });
+
+function clicked(stateData) {
+  var x, y, k;
+
+  d3.select("#linechart1").data([]).exit().remove();
+  d3.select("#lineh2").data([]).exit().remove();
+
+  d3.select("#barchart1").data([]).exit().remove();
+  d3.select("#barh2").data([]).exit().remove();
+
+  if (stateData && centered !== stateData) {
+    var centroid = path.centroid(stateData);
+    x = centroid[0];
+    y = centroid[1];
+    k = 4;
+    centered = stateData;
+  } else {
+    x = width / 2;
+    y = height / 2;
+    k = 1;
+    centered = null;
+  }
+
+  g.selectAll("path")
+      .classed("active", centered && function(stateData) { return stateData === centered; });
+
+  if (centered){
+
+    lineChart(stateData);
+    barChart(stateData);
+  }
+  else{
+
+    d3.select("#linechart1").data([]).exit().remove();
+    d3.select("#lineh2").data([]).exit().remove();
+
+    d3.select("#barchart1").data([]).exit().remove();
+    d3.select("#barh2").data([]).exit().remove();
+  }
+}
+
+function barChart(stateData){
+
+  var margin = {top: 50, right: 20, bottom: 30, left: 40},
+      width = 500 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+
+  var parse = d3.time.format("%Y").parse;
+
+  var x = d3.time.scale()
+          .range([0, width]);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("right")
+
+  var svg = d3.select("#barchart")
+    .append("svg")
+    .attr("id", "barchart1")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+  var maxPopulation = 0;
+  d3.csv("US Population1.csv", function(data) {
+    var minDate = parse(d3.min(data, function(d) {return d.date;}));
+    var maxDate = parse(d3.max(data, function(d) {return d.date;}));   
+    data.forEach(function(d) {
+      if (stateData.properties.NAME == d.state){
+        d.date = parse(d.date);
+        d.population = d.population;
+        if (parseInt(d.population) > parseInt(maxPopulation)){
+          maxPopulation = d.population;
+        }
+      }
+    });
+
+  x.domain([minDate, maxDate]);
+  y.domain([0, maxPopulation]).nice();
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("x", 6)
+      .attr("dx", ".71em")
+      .style("text-anchor", "start")
+      .text("Year");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Population");
+
+  var finData = [];
+
+      for(xx = 0, yy = 0; xx < data.length, yy < data.length; yy++){
+        if (data[yy].state == stateData.properties.NAME){
+          finData[xx] = data[yy];
+          xx++
+        }
+      }
+
+  svg.selectAll(".bar")
+      .data(finData)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.date); })
+      .attr("width", 33)
+      .attr("y", function(d) { return y(d.population); })
+      .attr("height", function(d) { return height - y(d.population); });
+    });
+}
+
+function type(d) {
+  d.population = d.population;
+  return d;
+}
+
+function lineChart(stateData){
+  var margin = {top: 50, right: 20, bottom: 30, left: 50},
+    width1 = 500 - margin.left - margin.right,
+    height1 = 400 - margin.top - margin.bottom;
+    parse = d3.time.format("%Y").parse;
+
+  var x = d3.time.scale()
+      .range([0, width1]);
+
+  var y = d3.scale.linear()
+      .range([height1, 0]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x);
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .ticks(4)
+      .orient("right");
+
+  var line = d3.svg.line()
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.population); });
+
+  var maxPopulation = 0;
+
+  d3.csv("US Population1.csv", function(data) {
+    var minDate = parse(d3.min(data, function(d) {return d.date;}));
+    var maxDate = parse(d3.max(data, function(d) {return d.date;}));   
+    data.forEach(function(d) {
+      if (stateData.properties.NAME == d.state){
+        d.date = parse(d.date);
+        d.population = d.population;
+        if (parseInt(d.population) > parseInt(maxPopulation)){
+          maxPopulation = d.population;
+        }
+      }
+    }); 
+
+    var svg1 = d3.select("#linechart")
+      .append("svg")
+      .attr("id", "linechart1")
+      .attr("width", width1 + margin.left + margin.right)
+      .attr("height", height1 + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    x.domain([minDate, maxDate]);
+    y.domain([0, maxPopulation]).nice();
+
+    svg1.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height1 + ")")
+        .call(xAxis)
+        .append("text")
+        .attr("x", 6)
+        .attr("dx", ".71em")
+        .style("text-anchor", "start")
+        .text("Year");
+
+    svg1.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Population");
+
+    var finData = [];
+
+    for(xx = 0, yy = 0; xx < data.length, yy < data.length; yy++){
+      if (data[yy].state == stateData.properties.NAME){
+        finData[xx] = data[yy];
+        xx++
+      }
+    }
+
+    svg1.append("path")
+      .datum(finData)
+      .attr("class", "line")
+      .attr("d", line);
+  });
+}
+</script>
+</body>
