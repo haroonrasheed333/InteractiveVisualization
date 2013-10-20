@@ -27,10 +27,10 @@ Upon opening, the svg of the entire US is displayed.
 
 On selecting a state using a mouse click the line graph that shows the trend of the population in that state is displayed
 
-'''Line Chart'''
+####Line Chart
 ![Line Chart] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/A3LineChart.JPG)
 
-'''Bar Chart'''
+####Bar Chart
 ![Bar Chart] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/A3BarChart.JPG)
 
 
