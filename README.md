@@ -21,25 +21,25 @@ The Interactivity that we aimed for
 ##Interactions
 Upon opening, the svg of the entire US is displayed.   
 
-[[Image: A3US_Map.JPG]]
+![US Map] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/A3US_Map.JPG)
 
 ##Data Selection
 
 On selecting a state using a mouse click the line graph that shows the trend of the population in that state is displayed
 
 '''Line Chart'''
-[[Image:A3LineChart.JPG]]
+![Line Chart] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/A3LineChart.JPG)
 
 '''Bar Chart'''
-[[Image:A3BarChart.JPG]]
+![Bar Chart] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/A3BarChart.JPG)
 
 
 ##Graph selection
 
 A check-box enables the user to select between 2 types of graphs, either a bar-graph or the line graph.
 
-[[Image:A3BothChart.JPG]]
- 
+![Both Charts] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/A3BothChart.JPG)
+
 ###Development stages and Individual contribution
 We got the inspiration for the display of the map from [ http://bl.ocks.org/mbostock/2206590]. Though the map of the US was available based on the latitude and longitude, there was no state-name for us to work with, and that is precisely the key we wanted to use to get the data of the corresponding state from the csv file that had the population data. We had to spend some time figuring out a way to display the name of the states. We found the 
 
@@ -50,6 +50,7 @@ We kept our scope limited from the very beginning and were able to achieve prett
 
 ###Team
 Haroon Rasheed Paul Mohammed
+
 Bharathkumar Gunasekaran
 
 The aspect that took the most time was getting to display the state name and integrating some javascript and d3 concepts. 
