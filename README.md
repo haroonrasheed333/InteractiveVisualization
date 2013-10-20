@@ -8,8 +8,8 @@ The Interactivity that we aimed for
 * Click on a particular state to get the trend.
 * Click in the selected state again to deselect
 
-[![Storyboard1] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/Screen%201.jpg)]
-[![Storyboard2] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/Screen%202.jpg)]
+![Storyboard1] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/Screen%201.jpg)
+![Storyboard2] (https://raw.github.com/haroonrasheed333/InteractiveVisualization/master/Screenshots/Screen%202.jpg)
 
 ###Additional features:
 * Selecting between a bar graph and a line graph
