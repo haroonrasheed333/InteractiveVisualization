@@ -15,7 +15,7 @@ The Interactivity that we aimed for
 * Selecting between a bar graph and a line graph
 
 ##Final Visualization
-[http://people.ischool.berkeley.edu/~haroon/CS294/Assignment3/interactive.html Live Visualization Link]
+[Live Visualization Link] (http://people.ischool.berkeley.edu/~haroon/CS294/Assignment3/interactive.html)
 
 
 ##Interactions
